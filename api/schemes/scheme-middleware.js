@@ -31,18 +31,13 @@ const checkSchemeId = (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
-  const { name } = req.body
-  const { id } = req.params.id
-  Schemes.findById(id)
-    .then(scheme => {
-      if (!name) {
-        next({ message: 'invalid scheme_name'})
+  const { scheme_name } = req.body
+      if (scheme_name === undefined || typeof scheme_name !== 'string' || !scheme_name.trim()) {
+        next({ status:400, message: 'invalid scheme_name'})
       } else {
-        req.scheme = scheme
         next()
       }
-    })
-    .catch(next())
+
 }
 
 /*
@@ -56,21 +51,16 @@ const validateScheme = (req, res, next) => {
 */
 const validateStep = (req, res, next) => {
   const { instructions, step_number } = req.body
-  const { id } = req.params.id
-  Schemes.findById(id)
-    .then(scheme => {
       if( !instructions || typeof instructions != 'string') {
         next({ status: 404, message: 'invalid step'})
       } else if (typeof step_number != "number" || step_number < 1) {
         next({ status: 404, message: 'invalid step'})
       } else {
-        req.scheme = scheme
         next()
       }
-    })
-    .catch(next())
-  
-}
+    }
+    
+
 
 module.exports = {
   checkSchemeId,
